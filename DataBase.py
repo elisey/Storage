@@ -15,7 +15,7 @@ def getItems(searchString):
 
     return items
 
-#Получить список (ID хранилища, количество деталей, название хранилища) для всех деталей itemId
+#Получить список хранилищ с искомым элементом itemId (ID хранилища, количество деталей, название хранилища)
 def getStoragesOfItem(itemId):
 
     items = []
@@ -85,7 +85,7 @@ def isItemExist(itemName):
         return True
 
 #Попытаться вставить деталь с заданным названием, если она еще не существует
-def insertNewItem(newItemName):
+def createNewItem(newItemName):
     if isItemExist(newItemName) == True:
         return False
     conn = sqlite3.connect(DataBaseName)
