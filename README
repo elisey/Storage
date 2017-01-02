@@ -1,0 +1,28 @@
+== Команды ==
+search <string> - получить все элементы, в названии которых содержится <string>
+search -s <storageId> - просмотреть все элементы в хранилище storageId
+search -i <itemId> - просмотреть все хранилища с элементом <itemId>
+
+tree - построить дерево хранилищ
+tree -s<storageId> - построить дерево для хранилища <storageId>
+
+create <string> - создать элемент с именем <string>
+check <itemName> - проверить существование элемента с именем 
+add <itemId> <storageId> <quantity> - добавить элементы
+remove <itemId> <storageId> <quantity> - добавить элементы
+move <itemId> <storageId> <quantity> - добавить элементы
+
+storage -a -n <storageName> -p <parrentId>
+storage -r <storageId>
+storage -c <storageName>
+
+status - общая информация
+
+
+== TODO ==
+ - Поиск по имени хранилища
+ - Команда "Показать дерево хранилища"
+ - Команда "Добавить хранилище"
+ - Команда "Удалить хранилище"
+ - Команда "Проверить существует ли хранилище с заданным именем"
+ - Возможность вместо ID элемента и ID хранилища указывать имя элементы или имя хранилища
