@@ -15,14 +15,14 @@ def getItems(searchString):
 
     return items
 
-#Получить список хранилищ с искомым элементом itemId (ID хранилища, количество деталей, название хранилища)
+#Получить список хранилищ с искомым элементом itemId (ID хранилища, название хранилища, количество деталей)
 def getStoragesOfItem(itemId):
 
     items = []
 
     conn = sqlite3.connect(DataBaseName)
     c = conn.cursor()
-    c.execute('SELECT ItemsAndStorages.storageId, ItemsAndStorages.Quantity, storages.StorageName FROM itemsAndStorages, storages WHERE ItemId = ? AND storages.StorageId = ItemsAndStorages.StorageId', [str(itemId)])
+    c.execute('SELECT ItemsAndStorages.storageId, storages.StorageName, ItemsAndStorages.Quantity  FROM itemsAndStorages, storages WHERE ItemId = ? AND storages.StorageId = ItemsAndStorages.StorageId', [str(itemId)])
 
     while True:
         item = c.fetchone()
