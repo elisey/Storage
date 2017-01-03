@@ -18,6 +18,8 @@ storage -c <storageName>
 
 status - общая информация
 
+help - справка
+
 
 == TODO ==
  - Поиск по имени хранилища
