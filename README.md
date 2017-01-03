@@ -1,25 +1,30 @@
-== Команды ==
-search <string> - получить все элементы, в названии которых содержится <string>
-search -s <storageId> - просмотреть все элементы в хранилище storageId
-search -i <itemId> - просмотреть все хранилища с элементом <itemId>
+## Команды
 
+### Поиск
+search -name STRING - получить все элементы, в названии которых содержится STRING
+
+### Работа с хранилищами
+storage --add --name STRING --parent INT - добавить хранилище с именем STRING и родителем INT
+storage --view --name STRING - просмотреть содержание хранилища с именем STRING
+storage --view --id INT - просмотреть содержание хранилища с ID INT
+
+### Работа с элементами
+item --view --name STRING - просмотреть наличие элемента с именем STRING в хранилищах
+item --view --id INT - просмотреть наличие элемента с ID INT в хранилищах
+
+item --create STRING
+item --add --name STRING1 --id INT1 --storagename STRING1 --storageid INT2 -quantity INT3
+item --remove --name STRING1 --id INT1 --storagename STRING2 --storageid INT2 -quantity INT3
+item --move --name STRING1 --id INT1 --storagenamesrc STRING2 --storageidsrc INT2 --storagenamedst STRING3 --storageiddst INT3 -quantity INT4
+
+### Работа с деревом хранилищ
 tree - построить дерево хранилищ
-tree -s<storageId> - построить дерево для хранилища <storageId>
+tree --storagename STRING1 --storageid INT2 - построить дерево для хранилища
 
-create <string> - создать элемент с именем <string>
-check <itemName> - проверить существование элемента с именем 
-add <itemId> <storageId> <quantity> - добавить элементы
-remove <itemId> <storageId> <quantity> - добавить элементы
-move <itemId> <storageId> <quantity> - добавить элементы
-
-storage -a -n <storageName> -p <parrentId>
-storage -r <storageId>
-storage -c <storageName>
-
-status - общая информация
-
-help - справка
-
+### Вспомогательные функции
+--status - общая информация
+--help - справка
+--version
 
 == TODO ==
  - Поиск по имени хранилища
