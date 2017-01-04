@@ -3,64 +3,63 @@ from prettytable import PrettyTable
 import argparse
 
 
-def searchCommand(args):
-    if args[0] == '-s':
-        if args[1] is not None:
-            #просмотреть все элементы в хранилище storageId
-            try:
-                storageId = int(args[1])
-            except TypeError:
-                print("wrong usage")
-                return
+def searchItems(searchString):
+    print('Поиск всех элементов"', searchString, '"')
+    items = DataBase.getItems(searchString)
 
-            print("Элементы в хранилище ", str(storageId))
-            items = DataBase.getItemsInStorage(storageId)
+    t = PrettyTable(['ID', 'Наименование', 'Кол-во'])
+    t.align = 'l'
 
-            t = PrettyTable( ['ID', 'Наименование', 'Кол-во'] )
-            t.align = 'l'
-            for item in items:
-                if item is not None:
-                    t.add_row([item[0], item[1], item[2]])
-            print(t)
+    for item in items:
+        if item is not None:
+            t.add_row([item[0][0], item[0][1], item[1]])
+    print(t)
 
-    elif args[0] == '-i':
-        if args[1] is not None:
-            #просмотреть все хранилища с элементом <itemId>
-            try:
-                itemId = int(args[1])
-            except TypeError:
-                print("wrong usage")
-                return
+def storageAdd(storageName, parentId):
+    print("Soon adding storage with ", storageName, " name and ", str(parentId), " parent id")
 
-            print("Хранилища с элементом ", str(itemId))
-            items = DataBase.getStoragesOfItem(itemId)
+def storageViewByName(storageName):
+    print("Soon viewing storage with ", storageName, " name")
 
-            t = PrettyTable( ['ID', 'Наименование хранилища', 'Кол-во'] )
-            t.align = 'l'
+def storageViewById(storageId):
+    print("Элементы в хранилище ", str(storageId))
+    items = DataBase.getItemsInStorage(storageId)
 
-            for item in items:
-                if item is not None:
-                    t.add_row([item[0], item[1], item[2]])
-            print(t)
+    t = PrettyTable(['ID', 'Наименование', 'Кол-во'])
+    t.align = 'l'
+    for item in items:
+        if item is not None:
+            t.add_row([item[0], item[1], item[2]])
+    print(t)
 
+def itemViewByName(itemName):
+    print("Wiev item with name", itemName)
+
+def itemViewById(itemId):
+    print("Просмотр элемента", str(itemId))
+    items = DataBase.getStoragesOfItem(itemId)
+
+    t = PrettyTable(['ID', 'Наименование хранилища', 'Кол-во'])
+    t.align = 'l'
+
+    for item in items:
+        if item is not None:
+            t.add_row([item[0], item[1], item[2]])
+    print(t)
+
+def itemCreate(itemName):
+    status = DataBase.createNewItem(itemName)
+    if status is True:
+        print("Элемент ", itemName, "успешно добавлен в базу")
     else:
-        if args[0] is not None:
-            #получить все элементы, в названии которых содержится args[1]
-            seatchString = args[0]
-            print('Поиск элементов по фразе "', seatchString, '"')
-            items = DataBase.getItems(seatchString)
+        print("Ошибка. Элемент ", itemName, "не добавлен в базу. Возможно элемент с таким именем уже существует")
 
-            t = PrettyTable(['ID', 'Наименование', 'Кол-во'])
-            t.align = 'l'
-
-            for item in items:
-                if item is not None:
-                    t.add_row([item[0][0], item[0][1], item[1]])
-            print(t)
+def itemAdd(itemName = None, itemId = None, storageName = None, storageId = None, quantity = 0):
+    print("Adding new item")
 
 def main():
     while True:
-        args = input('>').split()
+        inputString = input('>').split()
         #print(args)
 
         parser = argparse.ArgumentParser(prog='PROG')
@@ -79,7 +78,7 @@ def main():
         parser_storage.add_argument('--view', '-v', action='store_true')
 
         parser_storage.add_argument('--name', '-n', dest='name', type=str)
-        parser_storage.add_argument('--parentid', '-p', dest='parent', type=int)
+        parser_storage.add_argument('--parentid', '-p', dest='parentid', type=int)
         parser_storage.add_argument('--id', '-i', dest='id', type=int)
 
         #PARSER ITEM
@@ -111,7 +110,37 @@ def main():
         parser_status = subparsers.add_parser('status', help='status help')
         parser_status.add_argument('status', action='store_true')
 
-        print(parser.parse_args(args))
+
+        args = parser.parse_args(inputString)
+        print(args)
+
+
+        if hasattr(args, "search") is True:
+            searchItems(args.name)
+
+        elif hasattr(args, "storage") is True:
+            if args.add == True:
+                if args.name is not None and args.parentid is not None:
+                    storageAdd(args.name, args.parentid)
+            elif args.view == True:
+                if args.name is not None:
+                    storageViewByName(args.name)
+                elif args.id is not None:
+                    storageViewById(args.id)
+
+        elif hasattr(args, "item") is True:
+            if args.view == True:
+                if args.name is not None:
+                    itemViewByName(args.name)
+                elif args.id is not None:
+                    itemViewById(args.id)
+            elif args.create is not None:
+                if args.name is not None:
+                    itemCreate(args.name)
+            elif args.add is not None:
+                if (args.name is not None or args.id is not None) and (args.storageName is not None or args.storageId is not None) and (args.quantity is not None):
+                    itemAdd(args.name, args.id, args.storageName, args.storageId, args.quantity)
+
 
 
 if __name__ == '__main__':
