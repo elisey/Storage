@@ -16,10 +16,20 @@ def searchItems(searchString):
     print(t)
 
 def storageAdd(storageName, parentId):
-    print("Soon adding storage with ", storageName, " name and ", str(parentId), " parent id")
+    status = DataBase.addStorage(storageName, parentId)
+    parentName, result = DataBase.getStorageNameById(parentId)
+    if status is True:
+        print("Хранилище", storageName, "успешно добавлено в базу. Родитель: ID", parentId, parentName)
+    else:
+        print("Ошибка. Хранилище", storageName, "не добавлено в базу. Возможно хранилище с таким именем уже существует или указанный родитель не найден")
 
 def storageViewByName(storageName):
-    print("Soon viewing storage with ", storageName, " name")
+    storageId, result = DataBase.getStorageIdByName(storageName)
+
+    if result == False:
+        print("Ошибка. Хранилище", storageName, "не найдено")
+        return
+    storageViewById(storageId)
 
 def storageViewById(storageId):
     print("Элементы в хранилище ", str(storageId))
@@ -33,7 +43,12 @@ def storageViewById(storageId):
     print(t)
 
 def itemViewByName(itemName):
-    print("Wiev item with name", itemName)
+    itemId, result = DataBase.getItemIdByName(itemName)
+
+    if result == False:
+        print("Ошибка. Элемент", itemName, "не найден")
+        return
+    itemViewById(itemId)
 
 def itemViewById(itemId):
     print("Просмотр элемента", str(itemId))
