@@ -138,18 +138,17 @@ def getItemIdByName(itemName):
 
     conn = sqlite3.connect(DataBaseName)
     c = conn.cursor()
-    c.execute("SELECT ItemId, ItemName FROM items WHERE ItemName LIKE ?", (itemName,))
+    c.execute("SELECT ItemId FROM items WHERE ItemName LIKE ?", (itemName,))
 
     while True:
         item = c.fetchone()
-        items.append(item)
         if item is None:
             break
+        items.append(item)
     conn.close()
 
-    if  items[0] is not None:
-        if len(items) == 2:
-            return items[0][0], True
+    if len(items) == 1:
+        return items[0][0], True
     return -1, False
 
 def getItemNameById(itemId):
@@ -267,7 +266,7 @@ def __removeItemFromStorage(itemId, storageId):
 
 
 def main():
-    print(moveItems(1, 5, 6, 1))
+    print(getStorageNameById(33))
 
 if __name__ == '__main__':
     main()
