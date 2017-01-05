@@ -133,6 +133,24 @@ def moveItems(itemId, srcStorageId, dstStorageId, quantity):
     result = addItems(itemId, dstStorageId, quantity)
     return result
 
+def getItemIdByName(itemName):
+    items = []
+
+    conn = sqlite3.connect(DataBaseName)
+    c = conn.cursor()
+    c.execute("SELECT ItemId, ItemName FROM items WHERE ItemName LIKE ?", (itemName,))
+
+    while True:
+        item = c.fetchone()
+        items.append(item)
+        if item is None:
+            break
+    conn.close()
+
+    if  items[0] is not None:
+        if len(items) == 2:
+            return items[0][0], True
+    return -1, False
 
 
 #Получить список (ID детали и название детали) для всех деталей, в названии которых содержится строка itemName
