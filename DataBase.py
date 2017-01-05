@@ -194,6 +194,23 @@ def getStorageNameById(storageId):
         return text[0], True
     return -1, False
 
+def addStorage(storageName, parentId):
+    id, result = getStorageIdByName(storageName)
+
+    if result is True:
+        return False        #Хранилище с таким именем уже существует
+
+    name, result = getStorageNameById(parentId)
+    if result is False:
+        return False        #Не существует хранилища-родителя
+
+    conn = sqlite3.connect(DataBaseName)
+    c = conn.cursor()
+    c.execute("INSERT INTO storages (StorageName, ParrentStorageId) VALUES (?, ?)", [storageName, parentId])
+    conn.commit()
+    conn.close()
+    return True
+
 #Получить список (ID детали и название детали) для всех деталей, в названии которых содержится строка itemName
 def __searchItemsByName(itemName):
     items = []
