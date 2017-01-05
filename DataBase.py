@@ -4,14 +4,14 @@ import sqlite3
 DataBaseName = 'storageBase.db'
 
 #Получить список (ID делати, название детали, количество деталей) для всех деталей, в названии которых содержится строка searchString
-def getItems(searchString):
+def searchItems(searchString):
 
     items = []
     foundItems = __searchItemsByName(searchString)
     for foundItem in foundItems:
         if foundItem is not None:
             numOfItems = __getNumOfItems(foundItem[0])
-            items.append( (foundItem, numOfItems,) )
+            items.append( (foundItem[0], foundItem[1], numOfItems,) )
 
     return items
 

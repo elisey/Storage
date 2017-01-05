@@ -5,14 +5,14 @@ import argparse
 
 def searchItems(searchString):
     print('Поиск всех элементов"', searchString, '"')
-    items = DataBase.getItems(searchString)
+    items = DataBase.searchItems(searchString)
 
     t = PrettyTable(['ID', 'Наименование', 'Кол-во'])
     t.align = 'l'
 
     for item in items:
         if item is not None:
-            t.add_row([item[0][0], item[0][1], item[1]])
+            t.add_row([item[0], item[1], item[2]])
     print(t)
 
 def storageAdd(storageName, parentId):
