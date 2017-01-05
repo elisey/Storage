@@ -152,6 +152,18 @@ def getItemIdByName(itemName):
             return items[0][0], True
     return -1, False
 
+def getItemNameById(itemId):
+
+    conn = sqlite3.connect(DataBaseName)
+    c = conn.cursor()
+    c.execute("SELECT ItemName FROM items WHERE ItemId = ?", (itemId,))
+
+    text = c.fetchone()
+    conn.close()
+
+    if  text is not None:
+        return text[0], True
+    return -1, False
 
 #Получить список (ID детали и название детали) для всех деталей, в названии которых содержится строка itemName
 def __searchItemsByName(itemName):
@@ -168,7 +180,6 @@ def __searchItemsByName(itemName):
             break
     conn.close()
     return items
-
 
 #Получить общее количество деталей во всех хранилищах
 def __getNumOfItems(itemId):
