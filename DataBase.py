@@ -165,6 +165,36 @@ def getItemNameById(itemId):
         return text[0], True
     return -1, False
 
+def getStorageIdByName(storageName):
+    storages = []
+
+    conn = sqlite3.connect(DataBaseName)
+    c = conn.cursor()
+    c.execute("SELECT StorageId FROM storages WHERE StorageName LIKE ?", (storageName,))
+
+    while True:
+        storage = c.fetchone()
+        if storage is None:
+            break
+        storages.append(storage)
+    conn.close()
+
+    if len(storages) == 1:
+        return storages[0][0], True
+    return -1, False
+
+def getStorageNameById(storageId):
+    conn = sqlite3.connect(DataBaseName)
+    c = conn.cursor()
+    c.execute("SELECT StorageName FROM storages WHERE StorageId = ?", (storageId,))
+
+    text = c.fetchone()
+    conn.close()
+
+    if  text is not None:
+        return text[0], True
+    return -1, False
+
 #Получить список (ID детали и название детали) для всех деталей, в названии которых содержится строка itemName
 def __searchItemsByName(itemName):
     items = []
