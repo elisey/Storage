@@ -194,6 +194,18 @@ def getStorageNameById(storageId):
         return text[0], True
     return -1, False
 
+def getStorageParentId(storageId):
+    conn = sqlite3.connect(DataBaseName)
+    c = conn.cursor()
+    c.execute("SELECT ParrentStorageId FROM storages WHERE StorageId = ?", (storageId,))
+
+    text = c.fetchone()
+    conn.close()
+
+    if  text is not None:
+        return text[0], True
+    return -1, False
+
 def addStorage(storageName, parentId):
     id, result = getStorageIdByName(storageName)
 

@@ -137,6 +137,26 @@ def itemMove(itemName = None, itemId = None, storageNameSrc = None, storageIdSrc
     print("Элементы успешно перемещены")
     return
 
+def drawStoragesTreeById(storageId):
+    currentStorageId = storageId
+    while True:
+        storageName, result = DataBase.getStorageNameById(currentStorageId)
+        if result is False:
+            return
+        print(currentStorageId, '\t', storageName)
+        currentStorageId, result = DataBase.getStorageParentId(currentStorageId)
+        if currentStorageId == 0 or result is False:
+            return
+
+def drawStoragesTreeByName(storageName):
+    storageId, result = DataBase.getStorageIdByName(storageName)
+
+    if result is False:
+        print("Ошибка. Хранилище с именем", storageName, "не найдено" )
+        return
+    drawStoragesTreeById(storageId)
+
+
 def main():
     while True:
         inputString = input('>').split()
@@ -226,6 +246,14 @@ def main():
             elif args.move == True:
                 if (args.name is not None or args.id is not None) and (args.storageNameSrc is not None or args.storageIdSrc is not None) and (args.storageNameDst is not None or args.storageIdDst is not None) and (args.quantity is not None):
                     itemMove(args.name, args.id, args.storageNameSrc, args.storageIdSrc, args.storageNameDst,args.storageIdDst, args.quantity)
+
+        elif hasattr(args, "tree") is True:
+            if args.id is not None:
+                drawStoragesTreeById(args.id)
+            if args.name is not None:
+                drawStoragesTreeByName(args.name)
+
+
 
 
 if __name__ == '__main__':
