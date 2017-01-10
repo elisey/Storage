@@ -186,7 +186,7 @@ def main():
         parser_storage.add_argument('--add', '-a', action='store_true')
         parser_storage.add_argument('--view', '-v', action='store_true')
 
-        parser_storage.add_argument('--name', '-n', dest='name', type=str)
+        parser_storage.add_argument('--name', '-n', dest='name', type=str, nargs='*')
         parser_storage.add_argument('--parentid', '-p', dest='parentid', type=int)
         parser_storage.add_argument('--id', '-i', dest='id', type=int)
 
@@ -199,20 +199,20 @@ def main():
         parser_item.add_argument('--remove', '-r', action='store_true')
         parser_item.add_argument('--move', '-m', action='store_true')
 
-        parser_item.add_argument('--name', '-n', dest='name', type=str)
+        parser_item.add_argument('--name', '-n', dest='name', type=str, nargs='*')
         parser_item.add_argument('--id', '-i', dest='id', type=int)
-        parser_item.add_argument('--storagename', dest='storageName', type=str)
+        parser_item.add_argument('--storagename', dest='storageName', type=str, nargs='*')
         parser_item.add_argument('--storageid', dest='storageId', type=int)
-        parser_item.add_argument('--storagenamesrc', dest='storageNameSrc', type=str)
+        parser_item.add_argument('--storagenamesrc', dest='storageNameSrc', type=str, nargs='*')
         parser_item.add_argument('--storageidsrc', dest='storageIdSrc', type=int)
-        parser_item.add_argument('--storagenamedst', dest='storageNameDst', type=str)
+        parser_item.add_argument('--storagenamedst', dest='storageNameDst', type=str, nargs='*')
         parser_item.add_argument('--storageiddst', dest='storageIdDst', type=int)
         parser_item.add_argument('--quantity', '-q', dest='quantity', type=int)
 
         #PARSER TREE
         parser_tree = subparsers.add_parser('tree', help='tree help')
         parser_tree.add_argument('tree', action='store_true')
-        parser_tree.add_argument('--name', '-n', dest='name', type=str)
+        parser_tree.add_argument('--name', '-n', dest='name', type=str, nargs='*')
         parser_tree.add_argument('--id', '-i', dest='id', type=int)
 
         #PARSER STATUS
@@ -222,7 +222,19 @@ def main():
 
         args = parser.parse_args(inputString)
         print(args)
-
+        str2 = ' '
+        if hasattr(args, "name") is True:
+            if args.name is not None:
+                args.name = str2.join(args.name)
+        if hasattr(args, "storageName") is True:
+            if args.storageName is not None:
+                args.storageName = str2.join(args.storageName)
+        if hasattr(args, "storageNameSrc") is True:
+            if args.storageNameSrc is not None:
+                args.storageNameSrc = str2.join(args.storageNameSrc)
+        if hasattr(args, "storageNameDst") is True:
+            if args.storageNameDst is not None:
+                args.storageNameDst = str2.join(args.storageNameDst)
 
         if hasattr(args, "search") is True:
             searchItems(args.name)
