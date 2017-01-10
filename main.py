@@ -17,9 +17,10 @@ def searchItems(searchString):
 
 def storageAdd(storageName, parentId):
     status = DataBase.addStorage(storageName, parentId)
+    newStorageId, result = DataBase.getStorageIdByName(storageName)
     parentName, result = DataBase.getStorageNameById(parentId)
     if status is True:
-        print("Хранилище", storageName, "успешно добавлено в базу. Родитель: ID", parentId, parentName)
+        print("Хранилище", storageName, '('+str(newStorageId)+')', "успешно добавлено в базу. Родитель:", parentName, '('+str(parentId)+')')
     else:
         print("Ошибка. Хранилище", storageName, "не добавлено в базу. Возможно хранилище с таким именем уже существует или указанный родитель не найден")
 
@@ -32,7 +33,12 @@ def storageViewByName(storageName):
     storageViewById(storageId)
 
 def storageViewById(storageId):
-    print("Элементы в хранилище ", str(storageId))
+    storageName, result = DataBase.getStorageNameById(storageId)
+    if result == False:
+        print("Ошибка. Хранилище", storageId, "не найдено")
+        return
+
+    print("Элементы в хранилище", storageName, '('+str(storageId)+')')
     items = DataBase.getItemsInStorage(storageId)
 
     t = PrettyTable(['ID', 'Наименование', 'Кол-во'])
@@ -51,7 +57,11 @@ def itemViewByName(itemName):
     itemViewById(itemId)
 
 def itemViewById(itemId):
-    print("Просмотр элемента", str(itemId))
+    itemName, result = DataBase.getItemNameById(itemId)
+    if result == False:
+        print("Ошибка. Элемент", itemId, "не найден")
+        return
+    print("Просмотр элемента", itemName, '('+str(itemId)+')')
     items = DataBase.getStoragesOfItem(itemId)
 
     t = PrettyTable(['ID', 'Наименование хранилища', 'Кол-во'])
@@ -66,17 +76,14 @@ def itemCreate(itemName):
     status = DataBase.createNewItem(itemName)
 
     if status is False:
-        print("Ошибка. Элемент ", itemName, "не добавлен в базу. Возможно элемент с таким именем уже существует")
+        print("Ошибка. Элемент ", itemName, "не создан. Возможно элемент с таким именем уже существует")
         return
 
     itemId, result = DataBase.getItemIdByName(itemName)
     if result is True:
-        print("Элемент ", itemId, itemName, "успешно добавлен в базу")
+        print("Элемент ", itemName, '('+str(itemId)+')', "успешно создан")
     else:
-        print("Неизвестная ошибка. Элемент ", itemName, "не добавлен в базу")
-
-
-
+        print("Неизвестная ошибка. Элемент ", itemName, "не создан")
 
 def itemAdd(itemName = None, itemId = None, storageName = None, storageId = None, quantity = 0):
     if quantity == 0:
@@ -237,36 +244,73 @@ def main():
                 args.storageNameDst = str2.join(args.storageNameDst)
 
         if hasattr(args, "search") is True:
-            searchItems(args.name)
+            if args.name is not None:
+                searchItems(args.name)
+            else:
+                print("Ошибка. Не указана строка для поиска (--name)")
 
         elif hasattr(args, "storage") is True:
             if args.add == True:
                 if args.name is not None and args.parentid is not None:
                     storageAdd(args.name, args.parentid)
+                else:
+                    print("Ошибка. Не указано имя или ID нового хранилища (--name or --parentid)")
             elif args.view == True:
                 if args.name is not None:
                     storageViewByName(args.name)
                 elif args.id is not None:
                     storageViewById(args.id)
-
+                else:
+                    print("Ошибка. Не указано имя или ID хранилища (--name or --parentid)")
         elif hasattr(args, "item") is True:
             if args.view == True:
                 if args.name is not None:
                     itemViewByName(args.name)
                 elif args.id is not None:
                     itemViewById(args.id)
+                else:
+                    print("Ошибка. Не указан элемент (--name or --id)")
             elif args.create == True:
                 if args.name is not None:
                     itemCreate(args.name)
+                else:
+                    print("Ошибка. Не указано имя нового элемента (--name)")
             elif args.add == True:
-                if (args.name is not None or args.id is not None) and (args.storageName is not None or args.storageId is not None) and (args.quantity is not None):
-                    itemAdd(args.name, args.id, args.storageName, args.storageId, args.quantity)
+                if args.name is None and args.id is None:
+                    print("Ошибка. Не указан элемент (--name or --id)")
+                    continue
+                if args.storageName is None and args.storageId is None:
+                    print("Ошибка. Не указано хранилище (--storagename or --storageid)")
+                    continue
+                if args.quantity is None:
+                    print("Ошибка. Не указано количество элементов (--quantity)")
+                    continue
+                itemAdd(args.name, args.id, args.storageName, args.storageId, args.quantity)
             elif args.remove == True:
-                if (args.name is not None or args.id is not None) and (args.storageName is not None or args.storageId is not None) and (args.quantity is not None):
-                    itemRemove(args.name, args.id, args.storageName, args.storageId, args.quantity)
+                if args.name is None and args.id is None:
+                    print("Ошибка. Не указан элемент (--name or --id)")
+                    continue
+                if args.storageName is None and args.storageId is None:
+                    print("Ошибка. Не указано хранилище (--storagename or --storageid)")
+                    continue
+                if args.quantity is None:
+                    print("Ошибка. Не указано количество элементов (--quantity)")
+                    continue
+                itemRemove(args.name, args.id, args.storageName, args.storageId, args.quantity)
             elif args.move == True:
-                if (args.name is not None or args.id is not None) and (args.storageNameSrc is not None or args.storageIdSrc is not None) and (args.storageNameDst is not None or args.storageIdDst is not None) and (args.quantity is not None):
-                    itemMove(args.name, args.id, args.storageNameSrc, args.storageIdSrc, args.storageNameDst,args.storageIdDst, args.quantity)
+                if args.name is None and args.id is None:
+                    print("Ошибка. Не указан элемент (--name or --id)")
+                    continue
+                if args.storageNameSrc is None and args.storageIdSrc is None:
+                    print("Ошибка. Не указано исходное хранилище (--storagenamesrc or --storageidsrc)")
+                    continue
+                if args.storageNameDst is None and args.storageIdDst is None:
+                    print("Ошибка. Не указано конечное хранилище (--storagenamedst or --storageiddst)")
+                    continue
+                if args.quantity is None:
+                    print("Ошибка. Не указано количество элементов (--quantity)")
+                    continue
+                itemMove(args.name, args.id, args.storageNameSrc, args.storageIdSrc, args.storageNameDst,args.storageIdDst, args.quantity)
 
         elif hasattr(args, "tree") is True:
             if args.id is not None:
