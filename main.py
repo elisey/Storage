@@ -64,10 +64,19 @@ def itemViewById(itemId):
 
 def itemCreate(itemName):
     status = DataBase.createNewItem(itemName)
-    if status is True:
-        print("Элемент ", itemName, "успешно добавлен в базу")
-    else:
+
+    if status is False:
         print("Ошибка. Элемент ", itemName, "не добавлен в базу. Возможно элемент с таким именем уже существует")
+        return
+
+    itemId, result = DataBase.getItemIdByName(itemName)
+    if result is True:
+        print("Элемент ", itemId, itemName, "успешно добавлен в базу")
+    else:
+        print("Неизвестная ошибка. Элемент ", itemName, "не добавлен в базу")
+
+
+
 
 def itemAdd(itemName = None, itemId = None, storageName = None, storageId = None, quantity = 0):
     if quantity == 0:
