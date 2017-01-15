@@ -40,20 +40,19 @@ def storageViewById(storageId):
             t.add_row([item[0], item[1], item[2]])
     print(t)
 
-def itemViewByName(itemName):
-    itemId, result = DataBase.getItemIdByName(itemName)
+def itemView(itemId, itemName):
+    if itemId is not None:
+        itemName, result = DataBase.getItemNameById(itemId)
+        if result == False:
+            print("Ошибка. Элемент", itemId, "не найден")
+            return
+    else:
+        itemId, result = DataBase.getItemIdByName(itemName)
+        if result == False:
+            print("Ошибка. Элемент", itemName, "не найден")
+            return
 
-    if result == False:
-        print("Ошибка. Элемент", itemName, "не найден")
-        return
-    itemViewById(itemId)
-
-def itemViewById(itemId):
-    itemName, result = DataBase.getItemNameById(itemId)
-    if result == False:
-        print("Ошибка. Элемент", itemId, "не найден")
-        return
-    print("Просмотр элемента", itemName, '('+str(itemId)+')')
+    print("Просмотр элемента", itemName, '(' + str(itemId) + ')')
     items = DataBase.getStoragesOfItem(itemId)
 
     t = PrettyTable(['ID', 'Наименование хранилища', 'Кол-во'])
@@ -211,9 +210,9 @@ def main():
         elif hasattr(args, "item") is True:
             if args.view == True:
                 if args.name is not None:
-                    itemViewByName(args.name)
+                    itemView(None, args.name)
                 elif args.id is not None:
-                    itemViewById(args.id)
+                    itemView(args.id, None)
                 else:
                     print("Ошибка. Не указан элемент (--name or --id)")
             elif args.create == True:
