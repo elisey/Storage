@@ -164,24 +164,6 @@ def getItemNameById(itemId):
         return text[0], True
     return -1, False
 
-def getStorageIdByName(storageName):
-    storages = []
-
-    conn = sqlite3.connect(DataBaseName)
-    c = conn.cursor()
-    c.execute("SELECT StorageId FROM storages WHERE StorageName LIKE ?", (storageName,))
-
-    while True:
-        storage = c.fetchone()
-        if storage is None:
-            break
-        storages.append(storage)
-    conn.close()
-
-    if len(storages) == 1:
-        return storages[0][0], True
-    return -1, False
-
 def getStorageNameById(storageId):
     conn = sqlite3.connect(DataBaseName)
     c = conn.cursor()
@@ -207,11 +189,6 @@ def getStorageParentId(storageId):
     return -1, False
 
 def addStorage(storageName, parentId):
-    id, result = getStorageIdByName(storageName)
-
-    if result is True:
-        return False        #Хранилище с таким именем уже существует
-
     name, result = getStorageNameById(parentId)
     if result is False:
         return False        #Не существует хранилища-родителя
@@ -292,10 +269,6 @@ def __removeItemFromStorage(itemId, storageId):
     c.execute('DELETE FROM ItemsAndStorages WHERE Itemid = ? AND StorageId = ?;', [str(itemId), str(storageId)])
     conn.commit()
     conn.close()
-
-
-def main():
-    print(getStorageNameById(33))
 
 if __name__ == '__main__':
     main()

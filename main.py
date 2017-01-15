@@ -22,15 +22,7 @@ def storageAdd(storageName, parentId):
     if status is True:
         print("Хранилище", storageName, '('+str(newStorageId)+')', "успешно добавлено в базу. Родитель:", parentName, '('+str(parentId)+')')
     else:
-        print("Ошибка. Хранилище", storageName, "не добавлено в базу. Возможно хранилище с таким именем уже существует или указанный родитель не найден")
-
-def storageViewByName(storageName):
-    storageId, result = DataBase.getStorageIdByName(storageName)
-
-    if result == False:
-        print("Ошибка. Хранилище", storageName, "не найдено")
-        return
-    storageViewById(storageId)
+        print("Ошибка. Хранилище", storageName, "не добавлено в базу. Возможно указанный родитель не найден")
 
 def storageViewById(storageId):
     storageName, result = DataBase.getStorageNameById(storageId)
@@ -85,7 +77,7 @@ def itemCreate(itemName):
     else:
         print("Неизвестная ошибка. Элемент ", itemName, "не создан")
 
-def itemAdd(itemName = None, itemId = None, storageName = None, storageId = None, quantity = 0):
+def itemAdd(itemName = None, itemId = None, storageId = None, quantity = 0):
     if quantity == 0:
         print("Ошибка при добавлении элемента. Количество элементов должно быть больше ноля")
         return
@@ -96,26 +88,16 @@ def itemAdd(itemName = None, itemId = None, storageName = None, storageId = None
             print("Неизвестная ошибка при добавлении элемента")
             return
 
-    if storageId is None:
-        storageId, result = DataBase.getStorageIdByName(storageName)
-        if result is False:
-            print("Неизвестная ошибка при добавлении элемента")
-            return
     DataBase.addItems(itemId, storageId, quantity)
     print("Элементы успешно добавлены")
 
-def itemRemove(itemName = None, itemId = None, storageName = None, storageId = None, quantity = 0):
+def itemRemove(itemName = None, itemId = None, storageId = None, quantity = 0):
     if itemId is None:
         itemId, result = DataBase.getItemIdByName(itemName)
         if result is False:
             print("Неизвестная ошибка при удалении элемента")
             return
 
-    if storageId is None:
-        storageId, result = DataBase.getStorageIdByName(storageName)
-        if result is False:
-            print("Неизвестная ошибка при удалении элемента")
-            return
     result = DataBase.removeItems(itemId, storageId, quantity)
 
     if result == False:
@@ -125,21 +107,9 @@ def itemRemove(itemName = None, itemId = None, storageName = None, storageId = N
     print("Элементы успешно удалены")
     return
 
-def itemMove(itemName = None, itemId = None, storageNameSrc = None, storageIdSrc = None, storageNameDst = None, storageIdDst = None, quantity = 0):
+def itemMove(itemName = None, itemId = None, storageIdSrc = None, storageIdDst = None, quantity = 0):
     if itemId is None:
         itemId, result = DataBase.getItemIdByName(itemName)
-        if result is False:
-            print("Неизвестная ошибка при удалении элемента")
-            return
-
-    if storageIdSrc is None:
-        storageIdSrc, result = DataBase.getStorageIdByName(storageNameSrc)
-        if result is False:
-            print("Неизвестная ошибка при удалении элемента")
-            return
-
-    if storageIdDst is None:
-        storageIdDst, result = DataBase.getStorageIdByName(storageNameDst)
         if result is False:
             print("Неизвестная ошибка при удалении элемента")
             return
@@ -163,15 +133,6 @@ def drawStoragesTreeById(storageId):
         currentStorageId, result = DataBase.getStorageParentId(currentStorageId)
         if currentStorageId == 0 or result is False:
             return
-
-def drawStoragesTreeByName(storageName):
-    storageId, result = DataBase.getStorageIdByName(storageName)
-
-    if result is False:
-        print("Ошибка. Хранилище с именем", storageName, "не найдено" )
-        return
-    drawStoragesTreeById(storageId)
-
 
 def main():
     while True:
@@ -208,18 +169,14 @@ def main():
 
         parser_item.add_argument('--name', '-n', dest='name', type=str, nargs='*')
         parser_item.add_argument('--id', '-i', dest='id', type=int)
-        parser_item.add_argument('--storagename', dest='storageName', type=str, nargs='*')
         parser_item.add_argument('--storageid', dest='storageId', type=int)
-        parser_item.add_argument('--storagenamesrc', dest='storageNameSrc', type=str, nargs='*')
         parser_item.add_argument('--storageidsrc', dest='storageIdSrc', type=int)
-        parser_item.add_argument('--storagenamedst', dest='storageNameDst', type=str, nargs='*')
         parser_item.add_argument('--storageiddst', dest='storageIdDst', type=int)
         parser_item.add_argument('--quantity', '-q', dest='quantity', type=int)
 
         #PARSER TREE
         parser_tree = subparsers.add_parser('tree', help='tree help')
         parser_tree.add_argument('tree', action='store_true')
-        parser_tree.add_argument('--name', '-n', dest='name', type=str, nargs='*')
         parser_tree.add_argument('--id', '-i', dest='id', type=int)
 
         #PARSER STATUS
@@ -233,15 +190,6 @@ def main():
         if hasattr(args, "name") is True:
             if args.name is not None:
                 args.name = str2.join(args.name)
-        if hasattr(args, "storageName") is True:
-            if args.storageName is not None:
-                args.storageName = str2.join(args.storageName)
-        if hasattr(args, "storageNameSrc") is True:
-            if args.storageNameSrc is not None:
-                args.storageNameSrc = str2.join(args.storageNameSrc)
-        if hasattr(args, "storageNameDst") is True:
-            if args.storageNameDst is not None:
-                args.storageNameDst = str2.join(args.storageNameDst)
 
         if hasattr(args, "search") is True:
             if args.name is not None:
@@ -256,12 +204,10 @@ def main():
                 else:
                     print("Ошибка. Не указано имя или ID нового хранилища (--name or --parentid)")
             elif args.view == True:
-                if args.name is not None:
-                    storageViewByName(args.name)
-                elif args.id is not None:
+                if args.id is not None:
                     storageViewById(args.id)
                 else:
-                    print("Ошибка. Не указано имя или ID хранилища (--name or --parentid)")
+                    print("Ошибка. Не указано ID хранилища (--id)")
         elif hasattr(args, "item") is True:
             if args.view == True:
                 if args.name is not None:
@@ -279,44 +225,44 @@ def main():
                 if args.name is None and args.id is None:
                     print("Ошибка. Не указан элемент (--name or --id)")
                     continue
-                if args.storageName is None and args.storageId is None:
-                    print("Ошибка. Не указано хранилище (--storagename or --storageid)")
+                if args.storageId is None:
+                    print("Ошибка. Не указан ID хранилища (--storageid)")
                     continue
                 if args.quantity is None:
                     print("Ошибка. Не указано количество элементов (--quantity)")
                     continue
-                itemAdd(args.name, args.id, args.storageName, args.storageId, args.quantity)
+                itemAdd(args.name, args.id, args.storageId, args.quantity)
             elif args.remove == True:
                 if args.name is None and args.id is None:
                     print("Ошибка. Не указан элемент (--name or --id)")
                     continue
-                if args.storageName is None and args.storageId is None:
-                    print("Ошибка. Не указано хранилище (--storagename or --storageid)")
+                if args.storageId is None:
+                    print("Ошибка. Не указан ID хранилища (--storageid)")
                     continue
                 if args.quantity is None:
                     print("Ошибка. Не указано количество элементов (--quantity)")
                     continue
-                itemRemove(args.name, args.id, args.storageName, args.storageId, args.quantity)
+                itemRemove(args.name, args.id, args.storageId, args.quantity)
             elif args.move == True:
                 if args.name is None and args.id is None:
                     print("Ошибка. Не указан элемент (--name or --id)")
                     continue
-                if args.storageNameSrc is None and args.storageIdSrc is None:
-                    print("Ошибка. Не указано исходное хранилище (--storagenamesrc or --storageidsrc)")
+                if args.storageIdSrc is None:
+                    print("Ошибка. Не указан ID исходного хранилища (--storageidsrc)")
                     continue
                 if args.storageNameDst is None and args.storageIdDst is None:
-                    print("Ошибка. Не указано конечное хранилище (--storagenamedst or --storageiddst)")
+                    print("Ошибка. Не указан ID конечного хранилища (--storageiddst)")
                     continue
                 if args.quantity is None:
                     print("Ошибка. Не указано количество элементов (--quantity)")
                     continue
-                itemMove(args.name, args.id, args.storageNameSrc, args.storageIdSrc, args.storageNameDst,args.storageIdDst, args.quantity)
+                itemMove(args.name, args.id, args.storageIdSrc, args.storageIdDst, args.quantity)
 
         elif hasattr(args, "tree") is True:
             if args.id is not None:
                 drawStoragesTreeById(args.id)
-            if args.name is not None:
-                drawStoragesTreeByName(args.name)
+            else:
+                print("Ошибка. Не указан ID хранилища (--id)")
 
 
 
