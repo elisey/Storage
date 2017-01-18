@@ -62,7 +62,7 @@ def itemView(itemId, itemName):
             t.add_row([item[0], item[1], item[2]])
     print(t)
 
-def itemCreate(itemName):
+def itemCreate(itemName, storageId, quantity):
     status = DataBase.createNewItem(itemName)
 
     if status is False:
@@ -74,7 +74,12 @@ def itemCreate(itemName):
         print("Элемент ", itemName, '('+str(itemId)+')', "успешно создан")
     else:
         print("Неизвестная ошибка. Элемент ", itemName, "не создан")
+        return
 
+    if storageId is not None and quantity is not None:
+        itemAdd(None, itemId, storageId, quantity)
+
+#TODO Проверка существования элемента
 def itemAdd(itemName = None, itemId = None, storageId = None, quantity = 0):
     if quantity == 0:
         print("Ошибка при добавлении элемента. Количество элементов должно быть больше ноля")
@@ -216,7 +221,7 @@ def main():
                     print("Ошибка. Не указан элемент (--name or --id)")
             elif args.create == True:
                 if args.name is not None:
-                    itemCreate(args.name)
+                    itemCreate(args.name, args.storageId, args.quantity)
                 else:
                     print("Ошибка. Не указано имя нового элемента (--name)")
             elif args.add == True:
