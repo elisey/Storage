@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import DataBase
 from prettytable import PrettyTable
 import argparse
@@ -172,7 +173,7 @@ def main():
 
         parser_item.add_argument('--name', '-n', dest='name', type=str, nargs='*')
         parser_item.add_argument('--id', '-i', dest='id', type=int)
-        parser_item.add_argument('--storageid', dest='storageId', type=int)
+        parser_item.add_argument('--storageid', '-s', dest='storageId', type=int)
         parser_item.add_argument('--storageidsrc', dest='storageIdSrc', type=int)
         parser_item.add_argument('--storageiddst', dest='storageIdDst', type=int)
         parser_item.add_argument('--quantity', '-q', dest='quantity', type=int)
@@ -188,7 +189,7 @@ def main():
 
 
         args = parser.parse_args(inputString)
-        print(args)
+        #print(args)
         str2 = ' '
         if hasattr(args, "name") is True:
             if args.name is not None:

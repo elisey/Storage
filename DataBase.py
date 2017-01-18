@@ -75,7 +75,7 @@ def getItemsInStorage(storageId):
 def isItemExist(itemName):
     conn = sqlite3.connect(DataBaseName)
     c = conn.cursor()
-    c.execute('SELECT COUNT(ItemId) FROM items WHERE ItemName=?', [itemName])
+    c.execute('SELECT COUNT(ItemId) FROM items WHERE upper(ItemName) = upper(?)', [itemName])
     text = c.fetchone()
     conn.close()
 
@@ -138,7 +138,7 @@ def getItemIdByName(itemName):
 
     conn = sqlite3.connect(DataBaseName)
     c = conn.cursor()
-    c.execute("SELECT ItemId FROM items WHERE ItemName LIKE ?", (itemName,))
+    c.execute("SELECT ItemId FROM items WHERE upper(ItemName) LIKE upper(?)", (itemName,))
 
     while True:
         item = c.fetchone()
@@ -206,7 +206,7 @@ def __searchItemsByName(itemName):
 
     conn = sqlite3.connect(DataBaseName)
     c = conn.cursor()
-    c.execute("SELECT ItemId, ItemName FROM items WHERE ItemName LIKE ?", ("%" + itemName + "%",))
+    c.execute("SELECT ItemId, ItemName FROM items WHERE lower(ItemName) LIKE lower(?)", ("%" + itemName + "%",))
 
     while True:
         item = c.fetchone()
