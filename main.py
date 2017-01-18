@@ -17,10 +17,9 @@ def searchItems(searchString):
 
 def storageAdd(storageName, parentId):
     status = DataBase.addStorage(storageName, parentId)
-    newStorageId, result = DataBase.getStorageIdByName(storageName)
     parentName, result = DataBase.getStorageNameById(parentId)
     if status is True:
-        print("Хранилище", storageName, '('+str(newStorageId)+')', "успешно добавлено в базу. Родитель:", parentName, '('+str(parentId)+')')
+        print("Хранилище", storageName, "успешно добавлено в базу. Родитель:", parentName, '('+str(parentId)+')')
     else:
         print("Ошибка. Хранилище", storageName, "не добавлено в базу. Возможно указанный родитель не найден")
 
