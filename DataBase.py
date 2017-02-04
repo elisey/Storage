@@ -200,6 +200,22 @@ def addStorage(storageName, parentId):
     conn.close()
     return True
 
+def moveStorage(storageId, newParentId):
+    name, result = getStorageNameById(storageId)
+    if result is False:
+        return False        #Не существует хранилища
+
+    name, result = getStorageNameById(newParentId)
+    if result is False:
+        return False        #Не существует хранилища
+
+    conn = sqlite3.connect(DataBaseName)
+    c = conn.cursor()
+    c.execute("UPDATE storages SET ParrentStorageId = ? WHERE StorageId = ?", [str(newParentId), str(storageId)])
+    conn.commit()
+    conn.close()
+    return True
+
 #Получить список (ID детали и название детали) для всех деталей, в названии которых содержится строка itemName
 def __searchItemsByName(itemName):
     items = []

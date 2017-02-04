@@ -40,6 +40,17 @@ def storageViewById(storageId):
             t.add_row([item[0], item[1], item[2]])
     print(t)
 
+def storageMove(storageId, newParentId):
+    result = DataBase.moveStorage(storageId, newParentId)
+    if result == False:
+        print("Ошибка. Хранилище", storageId, "или новый предок", newParentId, "не найден")
+        return
+
+    storageName, result = DataBase.getStorageNameById(storageId)
+    newParentName, result = DataBase.getStorageNameById(newParentId)
+
+    print("Хранилище", storageName, '('+str(storageId)+')', "успешно перенесено в хранилище", newParentName, '('+str(newParentId)+')',)
+
 def itemView(itemId, itemName):
     if itemId is not None:
         itemName, result = DataBase.getItemNameById(itemId)
@@ -157,6 +168,7 @@ def main():
         parser_storage.add_argument('storage', action='store_true')
         parser_storage.add_argument('--add', '-a', action='store_true')
         parser_storage.add_argument('--view', '-v', action='store_true')
+        parser_storage.add_argument('--move', '-m', action='store_true')
 
         parser_storage.add_argument('--name', '-n', dest='name', type=str, nargs='*')
         parser_storage.add_argument('--parentid', '-p', dest='parentid', type=int)
@@ -212,6 +224,11 @@ def main():
                     storageViewById(args.id)
                 else:
                     print("Ошибка. Не указано ID хранилища (--id)")
+            elif args.move == True:
+                if args.id is not None and args.parentid is not None:
+                    storageMove(args.id, args.parentid)
+                else:
+                    print("Ошибка. Не указано ID хранилища или ID нового предка(--id or --parentid)")
         elif hasattr(args, "item") is True:
             if args.view == True:
                 if args.name is not None:
