@@ -271,7 +271,7 @@ def main():
                 if args.storageIdSrc is None:
                     print("Ошибка. Не указан ID исходного хранилища (--storageidsrc)")
                     continue
-                if args.storageNameDst is None and args.storageIdDst is None:
+                if args.storageIdDst is None:
                     print("Ошибка. Не указан ID конечного хранилища (--storageiddst)")
                     continue
                 if args.quantity is None:
